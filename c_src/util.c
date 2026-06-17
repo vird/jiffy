@@ -82,6 +82,35 @@ get_bytes_per_red(ErlNifEnv* env, ERL_NIF_TERM val, size_t* bpi)
 }
 
 int
+get_max_depth(ErlNifEnv* env, ERL_NIF_TERM val, int* max_depth)
+{
+    jiffy_st* st = (jiffy_st*) enif_priv_data(env);
+    const ERL_NIF_TERM* tuple;
+    int arity;
+    unsigned int depth;
+
+    if(!enif_get_tuple(env, val, &arity, &tuple)) {
+        return 0;
+    }
+
+    if(arity != 2) {
+        return 0;
+    }
+
+    if(enif_compare(tuple[0], st->atom_max_depth) != 0) {
+        return 0;
+    }
+
+    if(!enif_get_uint(env, tuple[1], &depth)) {
+        return 0;
+    }
+
+    *max_depth = (int) depth;
+
+    return 1;
+}
+
+int
 get_null_term(ErlNifEnv* env, ERL_NIF_TERM val, ERL_NIF_TERM *null_term)
 {
     jiffy_st* st = (jiffy_st*) enif_priv_data(env);
